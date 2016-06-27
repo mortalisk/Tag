@@ -1,4 +1,4 @@
-# XmlDsl
+# Tag - xml dsl for java
 
 A tiny little dsl for java for creating simple xml.
 
