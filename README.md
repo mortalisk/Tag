@@ -1,6 +1,6 @@
 # XmlDsl
 
-A tiny little dsl for creating simple xml.
+A tiny little dsl for java for creating simple xml.
 
 Example:
 
