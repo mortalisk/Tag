@@ -7,10 +7,10 @@ Example:
     String xml =
         tag("foo").with(
             atr("bar", "baz"),
-                tag("hello"),
-                val("world"),
-                tag("life").with(
-                    atr("isgood", "yes")))
+            tag("hello"),
+            val("world"),
+            tag("life").with(
+                atr("isgood", "yes")))
         .toString();
 
 Gives:
