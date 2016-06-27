@@ -13,6 +13,9 @@ Example:
                     atr("isgood", "yes")))
         .toString();
 
+Gives:
+
+    <foo bar="baz"><hello/>world<life isgood="yes"/></foo>
 
 Just import static the methods from com.alisk.xml.Tag.
 There is also a toDoc() method.
