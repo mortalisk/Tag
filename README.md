@@ -3,6 +3,7 @@
 A tiny little dsl for creating simple xml.
 
 Example:
+
     String xml =
         tag("foo").with(
             atr("bar", "baz"),
