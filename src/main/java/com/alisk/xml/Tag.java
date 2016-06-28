@@ -72,21 +72,25 @@ public class Tag {
     }
 
     public static Tag tag(String name) {
+        if (name == null) throw new NullPointerException("Cannot add null tag name");
         return new Tag(name);
     }
 
     public static Value val(String value) {
+        if (value == null) throw new NullPointerException("Cannot add null as value");
         return new Value(value);
     }
 
     public Tag with(Object... es) {
         for (Object e : es) {
+            if (e == null) throw new NullPointerException("Cannot add null to Tag");
             parts.add(e);
         }
         return this;
     }
 
     public static Attribute atr(String name, String value) {
+        if (name == null || value == null) throw new NullPointerException("Cannot add null as name of value of attribute");
         return new Attribute(name, value);
     }
 
@@ -123,15 +127,18 @@ public class Tag {
     public String toString() {
         try {
             TransformerFactory tf = TransformerFactory.newInstance();
+
+            tf.setAttribute("indent-number", 4);
             Transformer transformer;
 
             transformer = tf.newTransformer();
 
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             StringWriter writer = new StringWriter();
 
             transformer.transform(new DOMSource(toDoc()), new StreamResult(writer));
-            String output = writer.getBuffer().toString().replaceAll("\n|\r", "");
+            String output = writer.getBuffer().toString();//.replaceAll("\n|\r", "");
             return output;
         } catch (TransformerException e) {
             e.printStackTrace();
@@ -152,5 +159,4 @@ public class Tag {
     }
 
 }
-
 
