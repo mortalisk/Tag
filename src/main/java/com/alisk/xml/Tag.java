@@ -30,7 +30,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -39,61 +38,61 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-interface XmlNode {
-}
 
-class Attribute implements XmlNode {
-    String name;
-    String value;
-
-    Attribute(String name, String value) {
-        this.name = name;
-        this.value = value;
+public class Tag {
+    
+    
+    public static class Attribute {
+        String name;
+        String value;
+    
+        Attribute(String name, String value) {
+            this.name = name;
+            this.value = value;
+        }
     }
-}
-
-class Empty implements XmlNode {
-
-}
-
-class Value implements XmlNode {
-    String val;
-
-    Value(String val) {
-        this.val = val;
+    
+    public static class Empty {
+    
     }
-}
-
-public class Tag implements XmlNode {
+    
+    public static class Value {
+        String val;
+    
+        Value(String val) {
+            this.val = val;
+        }
+    }
+    
     String name;
-    ArrayList<XmlNode> parts = new ArrayList<>();
+    ArrayList<Object> parts = new ArrayList<Object>();
 
     Tag(String name) {
         this.name = name;
     }
 
-    static Tag tag(String name) {
+    public static Tag tag(String name) {
         return new Tag(name);
     }
 
-    static Value val(String value) {
+    public static Value val(String value) {
         return new Value(value);
     }
 
-    Tag with(XmlNode... es) {
-        for (XmlNode e : es) {
+    public Tag with(Object... es) {
+        for (Object e : es) {
             parts.add(e);
         }
         return this;
     }
 
-    static Attribute atr(String name, String value) {
+    public static Attribute atr(String name, String value) {
         return new Attribute(name, value);
     }
 
     static Element createElement(Document doc, Tag tag) {
         Element el = doc.createElement(tag.name);
-        for (XmlNode e : tag.parts) {
+        for (Object e : tag.parts) {
             if (e instanceof Tag) {
                 el.appendChild(createElement(doc, (Tag) e));
             } else if (e instanceof Attribute) {
@@ -106,7 +105,7 @@ public class Tag implements XmlNode {
         return el;
     }
 
-    Document toDoc() {
+    public Document toDoc() {
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = null;
@@ -153,3 +152,5 @@ public class Tag implements XmlNode {
     }
 
 }
+
+
