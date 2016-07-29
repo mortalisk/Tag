@@ -24,6 +24,8 @@ package com.alisk.xml;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -38,32 +40,35 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-
 public class Tag {
-    
-    
+
+
+    public interface Maker<T> {
+        Tag make(T t);
+    }
+
     public static class Attribute {
         String name;
         String value;
-    
+
         Attribute(String name, String value) {
             this.name = name;
             this.value = value;
         }
     }
-    
+
     public static class Empty {
-    
+
     }
-    
+
     public static class Value {
         String val;
-    
+
         Value(String val) {
             this.val = val;
         }
     }
-    
+
     String name;
     ArrayList<Object> parts = new ArrayList<Object>();
 
@@ -75,6 +80,19 @@ public class Tag {
         if (name == null) throw new NullPointerException("Cannot add null tag name");
         return new Tag(name);
     }
+
+
+    public static <T> List<Tag> tagList(Collection<T> col, Maker<T> maker) {
+        if (col == null) throw new NullPointerException("Cannot add null for collection in tagList()");
+        ArrayList<Tag> tags = new ArrayList<Tag>();
+        for (T t : col) {
+            Tag tag = maker.make(t);
+            if (tag == null) throw new NullPointerException("make() returned a null in tagList()");
+            tags.add(tag);
+        }
+        return tags;
+    }
+
 
     public static Value val(String value) {
         if (value == null) throw new NullPointerException("Cannot add null as value");
@@ -94,6 +112,7 @@ public class Tag {
         return new Attribute(name, value);
     }
 
+    @SuppressWarnings("unchecked")
     static Element createElement(Document doc, Tag tag) {
         Element el = doc.createElement(tag.name);
         for (Object e : tag.parts) {
@@ -104,6 +123,10 @@ public class Tag {
                 el.setAttribute(a.name, a.value);
             } else if (e instanceof Value) {
                 el.appendChild(doc.createTextNode(((Value) e).val));
+            } else if (e instanceof List<?>) {
+                for (Tag o : (List<Tag>) e) {
+                    el.appendChild(createElement(doc, o));
+                }
             }
         }
         return el;
@@ -124,6 +147,7 @@ public class Tag {
         return null;
     }
 
+    @Override
     public String toString() {
         try {
             TransformerFactory tf = TransformerFactory.newInstance();
@@ -159,4 +183,5 @@ public class Tag {
     }
 
 }
+
 
